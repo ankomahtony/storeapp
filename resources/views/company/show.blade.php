@@ -237,21 +237,25 @@
                                     <th>Item:</th>
                                     <th>Qty:</th>
                                     <th>Price:</th>
+                                    <th></th>
                                 </thead>
                                     
                                 <tr>
                                     <td>
-                                        <input type="text" class="input" id="itemName">
+                                        <input type="text" class="input" id="itemName1">
                                     </td>
                                     <td>
-                                        <input type="text" class="input" id="itemQty">
+                                        <input type="text" class="input" id="itemQty1">
                                     </td>
                                     <td>
-                                        <input type="text" class="input" id="itemPrice">
+                                        <input type="text" class="input" id="itemPrice1">
+                                    </td>
+                                    <td> 
+                                        <button type="button" class="btn btn-primary addItem input" name="addItem" onclick="addItem()">Add</button>
                                     </td>
                                 </tr>
                             </table>
-                            <button type="button" class="btn btn-primary btn-xs addItem" name="addItem" onclick="addItem()">Add</button>
+        
                             <hr>
                             <table class="table">
                                 <thead>
@@ -275,14 +279,14 @@
                                         <td> <div id="totalTB"></div></td>
                                     </tr>
                                     <tr class="italic bold">
-                                        <td colspan="3">Discount</td>
-                                        <td></td>
+                                        <td colspan="1">Discount</td>
                                         <td>
                                             <select name="discount" id="discount">
                                                 <option value="0">No</option>
                                                 <option value="1">Yes</option>
                                             </select>
                                         </td>
+                                        <td></td>
                                         <td id="discountPercent"></td>
                                     </tr>
                                     
@@ -294,8 +298,30 @@
                                     </tr>
                                     
                             </table>
-                        
-                            <button type="submit" class="btn btn-success">Save</button>
+                            <table class="table">
+                                <thead>
+                                    <th>Select Account</th>
+                                    <th>Bank Name</th>
+                                    <th>Account Name</th>
+                                    <th></th>
+                                </thead>
+                                <tbody>
+                                <tr> 
+                                    <td>
+                                        <select name="accountUsed" id="accountUsed" class="input">
+                                            <option value="Cash">Cash</option>
+                                            <option value="Bank">Bank</option>
+                                        </select>
+                                    </td>
+                                    <td id="accountBank"></td>
+                                    <td id="accountNumber"></td>
+                                    <td>
+                                        <button type="submit" class="btn btn-success input">Save</button>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                </tbody>
+                            </table>
                         </form>
                     </div>
                     <div class="row" id="creditSalesDiv">
@@ -363,20 +389,25 @@
             $(document).ready(function(){
                 var count = 0;
                 var totalBT = 0;
-                var totalLT
+                var totalLT =0;
                 $(document).on('click','.addItem',function(){
                     count++;
 
-                    var itemName = $('#itemName').val();
-                    var itemQty = $('#itemQty').val();
-                    var itemPrice = $('#itemPrice').val();
+                    var itemName = $('#itemName1').val();
+                    var itemQty = $('#itemQty1').val();
+                    var itemPrice = $('#itemPrice1').val();
                     var itemTotal = itemPrice * itemQty;
                     totalBT += itemTotal;
                     var html = '';
                     html += '<tr>';
                     html += '<td><input type="text" name="itemID[]"  class="input" value="'+count+'"></td><td><input type="text" name="itemName[]"  class="input" value="'+itemName+'"></td><td><input type="number" name="itemQty[]" class="input" value="'+itemQty+'"></td><td><input type="text" name="itemPrice[]" class="input" value="'+itemPrice+'"></td><td><input type="text" name="itemTotal[]" class="input" value="'+itemTotal+'"></td><td> - </td></tr>';
                     $('#salesTBody').append(html);
+                    $('#itemName1').val('');
+                    $('#itemQty1').val('');
+                    $('#itemPrice1').val('');
+                    $('#itemName1').focus();
                     $('#totalTB').text(totalBT);
+                    $('#totalLT').text(totalBT);
 
                 });
                 $('#discount').change(function(){
@@ -386,15 +417,32 @@
                     $('#discountPercent').append(newHtml);
                     $('#discountPercentInput').keyup( function(){
                         discount_percent = $('#discountPercentInput').val();
-                        totalLT = (1 + discount_percent / 100 ) * totalBT;
-                    })
+                        totalLT = (1 - discount_percent / 100 ) * totalBT;
+                        $('#totalLT').text(totalLT.toFixed(2));
+                        
+                    });
                 }else{
                      totalLT = totalBT;
+                     $('#totalLT').text(totalLT);
                 }
-                $('#totalLT').text(totalLT);
 
             });
-            });
+            var inputcount = 0;
+            $('#accountUsed').change(function(){
+                    var accountUsed = $('#accountUsed').val();
+                    // var inputcount = 0;
+                    if (accountUsed == "Bank" & inputcount==0){
+                        inputcount ++
+                        newHtml1 = '<input type="text" name="bankName" id="bankName" class="input">';
+                        newHtml2 = '<input type="text" name="bankAccNum" id="bankAccNum" class="input">';
+                        $('#accountBank').append(newHtml1);
+                        $('#accountNumber').append(newHtml2);
+                    }else{
+                        accountUsed = "Cash";
+                    }
+
+                });
+        });
             
             
             
